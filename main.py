@@ -86,6 +86,7 @@ async def upload(file_to_upload, caption, title, image_url):
 
     with open(A, "rb") as C:
         D = await upload_file(client, C, title=title, progress_callback=F)
+        result = D.to_dict()
         G, H = utils.get_attributes(A)
         I = InputMediaPhotoExternal(url=image_url)
         J = types.InputMediaUploadedDocument(
@@ -95,7 +96,7 @@ async def upload(file_to_upload, caption, title, image_url):
         await client.delete_messages(admin_user, [B.id])
         await client.send_file(entity=admin_user, caption=caption, file=J)
     await client.disconnect()
-    return D.to_dict()
+    return result
 
 
 async def send_video_by_id(video_data):
