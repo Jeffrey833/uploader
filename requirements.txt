@@ -1,0 +1,6 @@
+magnet-parser
+requests
+bs4
+telethon
+pyjwt
+python-dotenv

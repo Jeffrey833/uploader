@@ -14,10 +14,8 @@ from telethon.tl.types import (
     DocumentAttributeVideo,
     InputMediaUploadedDocument,
 )
-import requests, argparse, re, time, shutil, os, json, jwt, subprocess, datetime
-from magnet_parser import magnet_decode
+import requests, argparse, re, time, os, json, jwt, subprocess, datetime
 from dotenv import load_dotenv
-import asyncio
 
 load_dotenv()
 session_string = os.getenv("SESSION_STRING")
@@ -42,7 +40,8 @@ class Timer:
 
 
 def download_video(magnet_link):
-    A = subprocess.Popen(["go/bin/torrent", "download", magnet_link])
+    print('Downloading..')
+    A = subprocess.Popen(["torrent", "download", magnet_link])
     A.communicate()
     if A.returncode == 0:
         print("Download completed successfully.")
@@ -139,42 +138,3 @@ if __name__ == "__main__":
     parser.add_argument(
         "--caption", type=str, default="Default caption", help="Caption for the video"
     )
-    url = "https://api.ini.wtf/items/24"
-    result = requests.get(url)
-    if result.json():
-        data = result.json()
-        imdb_id = data["imdb_id"]
-        magnet_url = data["magnet_url"]
-        title = data["title"]
-        image_url = data["cover_url"]
-        decoded = magnet_decode(magnet_url)
-        dir_name = decoded.name
-        print(dir_name)
-        if download_video(magnet_url):
-            print("Seems downloaded successfully")
-            files = find_file()
-            if files:
-                result = asyncio.run(
-                    upload(
-                        file_to_upload=files["file"],
-                        caption=title,
-                        title=title,
-                        image_url=image_url,
-                    )
-                )
-                print(result)
-                if result:
-                    decoded_result = create_jwt(result)
-                    data["description"] = "updated"
-                    data["is_uploaded"] = True
-                    data["video_id"] = decoded_result
-                    print(
-                        requests.put(
-                            f"https://api.ini.wtf/items/{imdb_id}", json=data
-                        ).json()
-                    )
-                    shutil.rmtree(files["root"])
-                else:
-                    exit(print("Upload failed."))
-            else:
-                exit(print(_B))
