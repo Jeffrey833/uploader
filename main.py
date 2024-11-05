@@ -14,7 +14,7 @@ from telethon.tl.types import (
     DocumentAttributeVideo,
     InputMediaUploadedDocument,
 )
-import requests, argparse, re, time, os, json, jwt, subprocess, datetime
+import requests, argparse, re, time, os, json, jwt, subprocess, datetime, asyncio
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -95,6 +95,8 @@ async def upload(file_to_upload, caption, title, image_url):
         C.close()
         await client.delete_messages(admin_user, [B.id])
         await client.send_file(entity=admin_user, caption=caption, file=J)
+
+        asyncio.sleep(3)
     await client.disconnect()
     return result
 
