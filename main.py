@@ -94,7 +94,7 @@ async def upload(file_to_upload, caption, title, image_url):
         C.close()
         await client.delete_messages(admin_user, [B.id])
         await client.send_file(entity=admin_user, caption=caption, file=J)
-        await client.disconnect()
+    await client.disconnect()
     return D.to_dict()
 
 
