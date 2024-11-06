@@ -192,7 +192,7 @@ async def main_loop(start_id):
 
                         try:
                             if files:
-                                result = await upload_wrapper(files["file"], title, title, image_url)
+                                result = await upload(files["file"], title, title, image_url)
                                 input(result)
                                 # print(json.dumps(result, indent=4))
                                 if result:
