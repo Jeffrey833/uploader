@@ -141,13 +141,14 @@ def main(query, max_attempt):
     return result
 
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Fetch torrents from TPB by ID.")
-    parser.add_argument("start_id", type=int, help="ID to start fetching from")
-    args = parser.parse_args()
+async def upload_wrapper(file_to_upload, caption, title, image_url):
+    loop = asyncio.get_event_loop()
+    return await loop.run_in_executor(
+        None, upload, file_to_upload, caption, title, image_url
+    )
 
-    start_id = args.start_id
 
+async def main_loop(start_id):
     # Check for the last processed ID, if it exists
     last_id_file = "last_id.txt"
     if os.path.exists(last_id_file):
@@ -157,7 +158,7 @@ if __name__ == "__main__":
 
     try:
         while True:
-            time.sleep (1)
+            time.sleep(1)
             print(f"Processing ID: {start_id}")
             try:
                 res = session.get(
@@ -165,7 +166,7 @@ if __name__ == "__main__":
                     headers={"Content-Type": "application/json"},
                 )
 
-                assert res.status_code == 200, 'Status code is supposed to be 200'
+                assert res.status_code == 200, "Status code is supposed to be 200"
                 data = res.json()
 
                 imdb_id = data["imdb_id"]
@@ -174,7 +175,7 @@ if __name__ == "__main__":
                 image_url = data["cover_url"]
                 video_id = data["video_id"]
 
-                if magnet_url and video_id == "":
+                if magnet_url and not video_id:
                     print(data)
                     # imdb_id = data["imdb_id"]
 
@@ -187,17 +188,12 @@ if __name__ == "__main__":
                         print("Seems downloaded successfully")
                         files = find_file()
 
-                        loop = asyncio.get_event_loop()
+                        # loop = asyncio.get_event_loop()
 
                         try:
                             if files:
-                                result = loop.run_until_complete(
-                                    upload(
-                                        file_to_upload=files["file"],
-                                        caption=title,
-                                        title=title,
-                                        image_url=image_url,
-                                    )
+                                result = await upload_wrapper(
+                                    files["file"], title, title, image_url
                                 )
                                 # input(result)
                                 # print(json.dumps(result, indent=4))
@@ -223,16 +219,6 @@ if __name__ == "__main__":
                                 sys.exit(print("Download failed."))
                         except Exception as e:
                             print(e)
-
-                        finally:
-                            # Cancel all tasks and close the loop
-                            tasks = asyncio.all_tasks(loop=loop)
-                            for task in tasks:
-                                task.cancel()
-                            loop.run_until_complete(
-                                asyncio.gather(*tasks, return_exceptions=True)
-                            )
-                            loop.close()
 
                     # else:sys.exit(print('Download failed.'))
                     start_id += 1
@@ -276,3 +262,13 @@ if __name__ == "__main__":
         print(f"An error occurred: {e}")
         with open(last_id_file, "w") as f:
             f.write(str(start_id - 1))
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Fetch torrents from TPB by ID.")
+    parser.add_argument("start_id", type=int, help="ID to start fetching from")
+    args = parser.parse_args()
+
+    start_id = args.start_id
+
+    asyncio.run(main_loop(start_id))
