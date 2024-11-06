@@ -211,6 +211,8 @@ if __name__ == "__main__":
                                 sys.exit(print("Upload failed."))
                         else:
                             sys.exit(print('Download failed.'))
+
+                    # else:sys.exit(print('Download failed.'))
                     start_id += 1
                     
 
