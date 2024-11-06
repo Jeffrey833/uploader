@@ -192,9 +192,7 @@ async def main_loop(start_id):
 
                         try:
                             if files:
-                                result = await upload_wrapper(
-                                    files["file"], title, title, image_url
-                                )
+                                result = asyncio.run(upload_wrapper(files["file"], title, title, image_url))
                                 # input(result)
                                 # print(json.dumps(result, indent=4))
                                 if result:
@@ -208,10 +206,9 @@ async def main_loop(start_id):
                                     )
 
                                     print(
-                                        json.dumps(put_request.json(), indent=4)
-                                        if put_request.json()
-                                        else print("removing file root..")
+                                        put_request.json()
                                     )
+                                    print('removing file..')
                                     shutil.rmtree(files["root"])
                                 else:
                                     sys.exit(print("Upload failed."))
@@ -224,7 +221,7 @@ async def main_loop(start_id):
                     start_id += 1
 
                 # imdb_id =
-                title = make_filename_safe(data.json()["title"], " ")
+                # title = make_filename_safe(data.json()["title"], " ")
                 querys = title.split()
                 querys.pop()
 
