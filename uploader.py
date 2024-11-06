@@ -157,6 +157,7 @@ if __name__ == "__main__":
 
     try:
         while True:
+            time.sleep (1)
             print(f"Processing ID: {start_id}")
             try:
                 res = session.get(
@@ -164,21 +165,21 @@ if __name__ == "__main__":
                     headers={"Content-Type": "application/json"},
                 )
 
-                res.raise_for_status
+                assert res.status_code == 200, 'Status code is supposed to be 200'
                 data = res.json()
 
                 imdb_id = data["imdb_id"]
                 magnet_url = data["magnet_url"]
                 title = data["title"]
                 image_url = data["cover_url"]
+                video_id = data["video_id"]
 
-
-                if magnet_url:
+                if magnet_url and video_id == "":
                     print(data)
                     # imdb_id = data["imdb_id"]
-                    
+
                     decoded = magnet_decode(magnet_url)
-                    
+
                     # dir_name = decoded.name
                     # print(magnet_url)
                     # print(dir_name)
@@ -198,23 +199,28 @@ if __name__ == "__main__":
                                         image_url=image_url,
                                     )
                                 )
-                                input(result)
+                                # input(result)
                                 # print(json.dumps(result, indent=4))
                                 if result:
                                     decoded_result = create_jwt(result)
                                     data["description"] = "updated"
                                     data["is_uploaded"] = True
                                     data["video_id"] = decoded_result
-                                    put_request=(session.put(f"https://api.ini.wtf/items/{imdb_id}", json=data))
+                                    put_request = session.put(
+                                        f"https://api.ini.wtf/items/{imdb_id}",
+                                        json=data,
+                                    )
 
                                     print(
-                                        json.dumps(put_request.json(), indent=4) if put_request.json() else print('removing file root..')
+                                        json.dumps(put_request.json(), indent=4)
+                                        if put_request.json()
+                                        else print("removing file root..")
                                     )
                                     shutil.rmtree(files["root"])
                                 else:
                                     sys.exit(print("Upload failed."))
                             else:
-                                sys.exit(print('Download failed.'))
+                                sys.exit(print("Download failed."))
                         except Exception as e:
                             print(e)
 
@@ -223,14 +229,15 @@ if __name__ == "__main__":
                             tasks = asyncio.all_tasks(loop=loop)
                             for task in tasks:
                                 task.cancel()
-                            loop.run_until_complete(asyncio.gather(*tasks, return_exceptions=True))
+                            loop.run_until_complete(
+                                asyncio.gather(*tasks, return_exceptions=True)
+                            )
                             loop.close()
 
                     # else:sys.exit(print('Download failed.'))
                     start_id += 1
-                    
 
-                # imdb_id = 
+                # imdb_id =
                 title = make_filename_safe(data.json()["title"], " ")
                 querys = title.split()
                 querys.pop()
