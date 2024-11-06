@@ -41,7 +41,7 @@ class Timer:
 
 def download_video(magnet_link):
     # return True
-    print('Downloading..')
+    print("Downloading..")
     A = subprocess.Popen(["torrent", "download", magnet_link])
     A.communicate()
     if A.returncode == 0:
@@ -134,12 +134,25 @@ def find_file():
 
 
 if __name__ == "__main__":
+    # Initialize the argument parser
     parser = argparse.ArgumentParser(
         description="Send a video file to a specified chat."
     )
     parser.add_argument(
         "filename", type=str, help="The name of the video file to upload"
     )
-    parser.add_argument(
-        "--caption", type=str, default="Default caption", help="Caption for the video"
+
+    # Parse the arguments
+    args = parser.parse_args()
+
+    filename = args.filename
+    title = make_filename_safe(filename, ' ')
+
+    asyncio.run(
+        upload(
+            file_to_upload=filename,
+            caption=title,
+            title=title,
+            image_url='https://bogus.image',
+        )
     )
