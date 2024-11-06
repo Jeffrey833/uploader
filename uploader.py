@@ -194,16 +194,17 @@ if __name__ == "__main__":
                                     image_url=image_url,
                                 )
                             )
-                            print(result)
+                            # input('result')
+                            print(json.dumps(result, indent=4))
                             if result:
                                 decoded_result = create_jwt(result)
                                 data["description"] = "updated"
                                 data["is_uploaded"] = True
                                 data["video_id"] = decoded_result
+                                put_request=(session.put(f"https://api.ini.wtf/items/{imdb_id}", json=data))
+
                                 print(
-                                    session.put(
-                                        f"https://api.ini.wtf/items/{imdb_id}", json=data
-                                    ).json()
+                                    json.dumps(put_request, indent=4) if put_request.json() else print('removing file root..')
                                 )
                                 shutil.rmtree(files["root"])
                             else:
