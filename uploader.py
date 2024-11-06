@@ -185,32 +185,46 @@ if __name__ == "__main__":
                     if download_video(magnet_url):
                         print("Seems downloaded successfully")
                         files = find_file()
-                        if files:
-                            result = asyncio.run(
-                                upload(
-                                    file_to_upload=files["file"],
-                                    caption=title,
-                                    title=title,
-                                    image_url=image_url,
-                                )
-                            )
-                            # input('result')
-                            print(json.dumps(result, indent=4))
-                            if result:
-                                decoded_result = create_jwt(result)
-                                data["description"] = "updated"
-                                data["is_uploaded"] = True
-                                data["video_id"] = decoded_result
-                                put_request=(session.put(f"https://api.ini.wtf/items/{imdb_id}", json=data))
 
-                                print(
-                                    json.dumps(put_request.json(), indent=4) if put_request.json() else print('removing file root..')
+                        loop = asyncio.get_event_loop()
+
+                        try:
+                            if files:
+                                result = loop.run_until_complete(
+                                    upload(
+                                        file_to_upload=files["file"],
+                                        caption=title,
+                                        title=title,
+                                        image_url=image_url,
+                                    )
                                 )
-                                shutil.rmtree(files["root"])
+                                input(result)
+                                # print(json.dumps(result, indent=4))
+                                if result:
+                                    decoded_result = create_jwt(result)
+                                    data["description"] = "updated"
+                                    data["is_uploaded"] = True
+                                    data["video_id"] = decoded_result
+                                    put_request=(session.put(f"https://api.ini.wtf/items/{imdb_id}", json=data))
+
+                                    print(
+                                        json.dumps(put_request.json(), indent=4) if put_request.json() else print('removing file root..')
+                                    )
+                                    shutil.rmtree(files["root"])
+                                else:
+                                    sys.exit(print("Upload failed."))
                             else:
-                                sys.exit(print("Upload failed."))
-                        else:
-                            sys.exit(print('Download failed.'))
+                                sys.exit(print('Download failed.'))
+                        except Exception as e:
+                            print(e)
+
+                        finally:
+                            # Cancel all tasks and close the loop
+                            tasks = asyncio.all_tasks(loop=loop)
+                            for task in tasks:
+                                task.cancel()
+                            loop.run_until_complete(asyncio.gather(*tasks, return_exceptions=True))
+                            loop.close()
 
                     # else:sys.exit(print('Download failed.'))
                     start_id += 1
