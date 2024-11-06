@@ -204,7 +204,7 @@ if __name__ == "__main__":
                                 put_request=(session.put(f"https://api.ini.wtf/items/{imdb_id}", json=data))
 
                                 print(
-                                    json.dumps(put_request, indent=4) if put_request.json() else print('removing file root..')
+                                    json.dumps(put_request.json(), indent=4) if put_request.json() else print('removing file root..')
                                 )
                                 shutil.rmtree(files["root"])
                             else:

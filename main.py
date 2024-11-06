@@ -40,7 +40,7 @@ class Timer:
 
 
 def download_video(magnet_link):
-    # return True
+    return True
     print('Downloading..')
     A = subprocess.Popen(["torrent", "download", magnet_link])
     A.communicate()
@@ -76,29 +76,30 @@ def make_filename_safe(filename, divider):
 
 async def upload(file_to_upload, caption, title, image_url):
     A = file_to_upload
-    await client.start()
-    print("Client started. Listening for messages...")
-    E = Timer()
-    B = await client.send_message(admin_user, "Uploading started")
+    async with client:
+        await client.start()
+        print("Client started. Listening for messages...")
+        E = Timer()
+        B = await client.send_message(admin_user, "Uploading started")
 
-    async def F(current, total):
-        if E.can_send():
-            await B.edit("{} {}%".format("Upload", current * 100 / total))
+        async def F(current, total):
+            if E.can_send():
+                await B.edit("{} {}%".format("Upload", current * 100 / total))
 
-    with open(A, "rb") as C:
-        D = await upload_file(client, C, title=title, progress_callback=F)
-        result = D.to_dict()
-        G, H = utils.get_attributes(A)
-        I = InputMediaPhotoExternal(url=image_url)
-        J = types.InputMediaUploadedDocument(
-            file=D, mime_type=H, attributes=G, thumb=I, force_file=_A
-        )
-        C.close()
-        await client.delete_messages(admin_user, [B.id])
-        await client.send_file(entity=admin_user, caption=caption, file=J)
+        with open(A, "rb") as C:
+            D = await upload_file(client, C, title=title, progress_callback=F)
+            result = D.to_dict()
+            G, H = utils.get_attributes(A)
+            I = InputMediaPhotoExternal(url=image_url)
+            J = types.InputMediaUploadedDocument(
+                file=D, mime_type=H, attributes=G, thumb=I, force_file=_A
+            )
+            C.close()
+            await client.delete_messages(admin_user, [B.id])
+            await client.send_file(entity=admin_user, caption=caption, file=J)
 
-        await asyncio.sleep(3)
-    await client.disconnect()
+            await asyncio.sleep(3)
+    # await client.disconnect()
     return result
 
 
