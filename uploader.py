@@ -193,25 +193,26 @@ async def main_loop(start_id):
                         try:
                             if files:
                                 result = await upload(files["file"], title, title, image_url)
-                                input(result)
+                                result_data = result
+                                print(result_data)
                                 # print(json.dumps(result, indent=4))
-                                if result:
-                                    decoded_result = create_jwt(result)
-                                    data["description"] = "updated"
-                                    data["is_uploaded"] = True
-                                    data["video_id"] = decoded_result
-                                    put_request = session.put(
-                                        f"https://api.ini.wtf/items/{imdb_id}",
-                                        json=data,
-                                    )
+                                # if result:
+                                decoded_result = create_jwt(result_data)
+                                data["description"] = "updated"
+                                data["is_uploaded"] = True
+                                data["video_id"] = decoded_result
+                                put_request = session.put(
+                                    f"https://api.ini.wtf/items/{imdb_id}",
+                                    json=data,
+                                )
 
-                                    print(
-                                        put_request.json()
-                                    )
-                                    print('removing file..')
-                                    shutil.rmtree(files["root"])
-                                else:
-                                    sys.exit(print("Upload failed."))
+                                print(
+                                    put_request.json()
+                                )
+                                print('removing file..')
+                                shutil.rmtree(files["root"])
+                                # else:
+                                #     sys.exit(print("Upload failed."))
                             else:
                                 sys.exit(print("Download failed."))
                         except Exception as e:

@@ -98,7 +98,7 @@ async def upload(file_to_upload, caption, title, image_url):
             await client.delete_messages(admin_user, [B.id])
             await client.send_file(entity=admin_user, caption=caption, file=J)
 
-            await asyncio.sleep(3)
+            # await asyncio.sleep(3)
         await client.disconnect()
     return result
 
