@@ -40,7 +40,7 @@ class Timer:
 
 
 def download_video(magnet_link):
-    return True
+    # return True
     print('Downloading..')
     A = subprocess.Popen(["torrent", "download", magnet_link])
     A.communicate()
