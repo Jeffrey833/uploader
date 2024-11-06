@@ -192,8 +192,8 @@ async def main_loop(start_id):
 
                         try:
                             if files:
-                                result = asyncio.run(upload_wrapper(files["file"], title, title, image_url))
-                                # input(result)
+                                result = await upload_wrapper(files["file"], title, title, image_url)
+                                input(result)
                                 # print(json.dumps(result, indent=4))
                                 if result:
                                     decoded_result = create_jwt(result)
