@@ -222,26 +222,26 @@ async def main_loop(start_id):
 
                 # imdb_id =
                 # title = make_filename_safe(data.json()["title"], " ")
-                querys = title.split()
-                querys.pop()
+                # querys = title.split()
+                # querys.pop()
 
-                query = " ".join(v for v in querys).lower()
+                # query = " ".join(v for v in querys).lower()
 
-                print(f"querying.. {query}")
-                results = main(query, 3)
+                # print(f"querying.. {query}")
+                # results = main(query, 3)
 
-                if results:
-                    new_data = data.json()
-                    magnet = results[0]["magnet"]
+                # if results:
+                #     new_data = data.json()
+                #     magnet = results[0]["magnet"]
 
-                    new_data["magnet_url"] = magnet
-                    r = requests.put(
-                        f"https://api.ini.wtf/items/{imdb_id}",
-                        headers={"Content-Type": "application/json"},
-                        json=new_data,
-                    )
-                    print(r)
-                print(json.dumps(results, indent=4))
+                #     new_data["magnet_url"] = magnet
+                #     r = requests.put(
+                #         f"https://api.ini.wtf/items/{imdb_id}",
+                #         headers={"Content-Type": "application/json"},
+                #         json=new_data,
+                #     )
+                #     print(r)
+                # print(json.dumps(results, indent=4))
             except Exception as e:
                 print(f"Error posting data for '{data['title']}': {str(e)}")
             start_id += 1
