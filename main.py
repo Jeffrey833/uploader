@@ -99,7 +99,7 @@ async def upload(file_to_upload, caption, title, image_url):
             await client.send_file(entity=admin_user, caption=caption, file=J)
 
             await asyncio.sleep(3)
-    # await client.disconnect()
+        await client.disconnect()
     return result
 
 
