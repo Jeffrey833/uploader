@@ -179,7 +179,7 @@ async def main_loop(start_id):
                     print(data)
                     # imdb_id = data["imdb_id"]
 
-                    decoded = magnet_decode(magnet_url)
+                    # decoded = magnet_decode(magnet_url)
 
                     # dir_name = decoded.name
                     # print(magnet_url)
@@ -194,6 +194,12 @@ async def main_loop(start_id):
                             if files:
                                 result = await upload(files["file"], title, title, image_url)
                                 result_data = result
+
+
+                                all_tasks = asyncio.all_tasks()
+                                for task in all_tasks: 
+                                    task.cancel()
+
                                 print(result_data)
                                 # print(json.dumps(result, indent=4))
                                 # if result:
@@ -209,8 +215,8 @@ async def main_loop(start_id):
                                 print(
                                     put_request.json()
                                 )
-                                print('removing file..')
-                                shutil.rmtree(files["root"])
+                                print('Removing file..')
+                                shutil.rmtree(files["file"])
                                 # else:
                                 #     sys.exit(print("Upload failed."))
                             else:
