@@ -198,6 +198,8 @@ async def main_loop(start_id):
 
                                 all_tasks = asyncio.all_tasks()
                                 for task in all_tasks: 
+
+                                    print(task)
                                     task.cancel()
 
                                 print(result_data)

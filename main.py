@@ -84,6 +84,7 @@ async def upload(file_to_upload, caption, title, image_url):
 
         async def F(current, total):
             if E.can_send():
+                print("{} {}%".format("Upload", current * 100 / total))
                 await B.edit("{} {}%".format("Upload", current * 100 / total))
 
         with open(A, "rb") as C:
