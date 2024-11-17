@@ -135,6 +135,15 @@ def get_lk21_download_url():
                 file.write("\n")
 
 
+def get_file_size_in_mb(file_path):
+    # Get the file size in bytes
+    file_size_bytes = os.path.getsize(file_path)
+    
+    # Convert bytes to megabytes
+    file_size_mb = file_size_bytes / (1024 * 1024)
+    
+    return file_size_mb
+
 def download():
     urls = open("download_links.txt", "r").read().splitlines()
     d = get_page_source()

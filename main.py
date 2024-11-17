@@ -134,26 +134,28 @@ def find_file():
                 return {"file": D, "root": B}
 
 
-if __name__ == "__main__":
-    # Initialize the argument parser
-    parser = argparse.ArgumentParser(
-        description="Send a video file to a specified chat."
-    )
-    parser.add_argument(
-        "filename", type=str, help="The name of the video file to upload"
-    )
+parser = argparse.ArgumentParser(
+    description="Send a video file to a specified chat."
+)
+parser.add_argument(
+    "filename", type=str, help="The name of the video file to upload"
+)
 
-    # Parse the arguments
-    args = parser.parse_args()
+# Parse the arguments
+args = parser.parse_args()
 
-    filename = args.filename
-    title = make_filename_safe(filename, ' ')
+filename = args.filename
+title = make_filename_safe(filename, ' ')
 
-    asyncio.run(
-        upload(
-            file_to_upload=filename,
-            caption=title,
-            title=title,
-            image_url='https://bogus.image',
-        )
+asyncio.run(
+    upload(
+        file_to_upload=filename,
+        caption=title,
+        title=title,
+        image_url='https://bogus.image',
     )
+)
+
+# if __name__ == "__main__":
+#     # Initialize the argument parser
+
