@@ -89,6 +89,12 @@ if ! [[ $size_in_byte =~ ^[0-9]+$ ]];then
     exit 1
 fi
 
+# Check if the content length exceeds 1.9 GB (1,900,000,000 bytes)
+if [ "$size_in_byte" -gt 1900000000 ]; then
+    printf "\e[31mContent length exceeds 1.9 GB. Download canceled.\e[0m\n"
+    exit 1
+fi
+
 size_per_slice=$(($size_in_byte/$slices))
 let size_per_slice=${size_per_slice}+1  # avoid rounding issue
 
