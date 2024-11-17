@@ -147,14 +147,12 @@ args = parser.parse_args()
 filename = args.filename
 title = make_filename_safe(filename, ' ')
 
-asyncio.run(
-    upload(
-        file_to_upload=filename,
-        caption=title,
-        title=title,
-        image_url='https://bogus.image',
-    )
-)
+# asyncio.run(
+#     )
+
+loop = asyncio.get_event_loop()
+loop.run_until_complete(upload(file_to_upload=filename, caption=title, title=title, image_url='https://bogus.image'))
+loop.close()
 
 # if __name__ == "__main__":
 #     # Initialize the argument parser
