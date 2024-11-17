@@ -13,8 +13,9 @@ from telethon import TelegramClient, types, events
 api_id = os.getenv("API_ID")
 api_hash = os.getenv("API_HASH")
 
-recipient = ''  # Username or ID of the recipient
-group_id = ''
+recipient = ""  # Username or ID of the recipient
+group_id = ""
+
 
 def get_page_source(url: str = "https://google.com"):
     d = uc.Chrome(version_main=129)
@@ -28,6 +29,7 @@ def get_page_source(url: str = "https://google.com"):
         print(f"An error occurred: {e}")
 
     return d
+
 
 def get_slug(page_source: str):
     soup = bs4.BeautifulSoup(page_source, "html.parser")
@@ -47,6 +49,7 @@ def get_slug(page_source: str):
             file.write("\n".join([v for v in links]))
             file.write("\n")
 
+
 def get_download_url(page_source: str):
     # Parse the HTML with BeautifulSoup
     soup = bs4.BeautifulSoup(page_source, "html.parser")
@@ -59,6 +62,7 @@ def get_download_url(page_source: str):
 
     else:
         return []
+
 
 def get_lk21_slug():
     driver = get_page_source()
@@ -99,6 +103,7 @@ def get_lk21_slug():
             except Exception as e:
                 print(e)
 
+
 def get_lk21_download_url():
     slugs = open("slug.sorted.txt", "r").read().splitlines()
 
@@ -109,9 +114,8 @@ def get_lk21_download_url():
         title = slug.rstrip("/").split("/")[-1]
         url = f"https://dl.lk21.party/get/{title}/"
 
-        
         if i % 10 == 0:
-            print(i, 'deleting cookies..')
+            print(i, "deleting cookies..")
             d.delete_all_cookies()
         d.get(url)
         page_source = d.page_source
@@ -122,21 +126,22 @@ def get_lk21_download_url():
                 file.write(f"{title},{','.join([v for v in download_links])}")
                 file.write("\n")
 
+
 def download():
-    urls = open('download_links.txt', 'r').read().splitlines()
+    urls = open("download_links.txt", "r").read().splitlines()
     d = get_page_source()
 
-    i=0
-    download_urls = [url.split(',') for url in urls]
+    i = 0
+    download_urls = [url.split(",") for url in urls]
     for urls in download_urls:
-        i+=1
+        i += 1
 
         slug = urls[0]
-        download_url  = [u for u in urls if 'filemoon.in' in u]
-        telegram_url  = [u for u in urls if 'telegram.php' in u]
+        download_url = [u for u in urls if "filemoon.in" in u]
+        telegram_url = [u for u in urls if "telegram.php" in u]
 
         if telegram_url:
-            print('skipping', i)
+            print("skipping", i)
             continue
 
         print(i)
@@ -149,16 +154,22 @@ def download():
                 try:
                     # Adjust the selector as needed to target the specific <a> element
                     element = WebDriverWait(d, 10).until(
-                        EC.presence_of_element_located((By.CSS_SELECTOR, 'a.button[download]'))
+                        EC.presence_of_element_located(
+                            (By.CSS_SELECTOR, "a.button[download]")
+                        )
                     )
                     print(f"Download link appear")
-                    download_link = element.get_attribute('href')
+                    download_link = element.get_attribute("href")
 
                     filename = f"{slug}.mp4"
-                    result = os.system(f"bash mcurl -s 60 -o '{filename}' '{download_link}'")
+                    result = os.system(
+                        f"bash mcurl -s 60 -o '{filename}' '{download_link}'"
+                    )
 
-                    if result==0:
-                        assert os.system(f'python main.py {filename}') == 0, 'download error'
+                    if result == 0:
+                        assert (
+                            os.system(f"python main.py {filename}") == 0
+                        ), "download error"
                         os.remove(filename)
                     break  # Exit the loop if the element is found
                 except Exception as e:
@@ -166,8 +177,9 @@ def download():
 
             # input()
 
+
 def telegram_sender():
-    client = TelegramClient('iuploadyou', api_id, api_hash)
+    client = TelegramClient("iuploadyou", api_id, api_hash)
 
     @client.on(events.NewMessage(from_users=recipient))
     async def handler(event):
@@ -175,29 +187,33 @@ def telegram_sender():
         print(f"Received message from bot: {event.message.message}")
         if event.message.media:
             # Send the video file to the group
-            await client.send_file(group_id, event.message.media, caption=event.message.message)
+            await client.send_file(
+                group_id, event.message.media, caption=event.message.message
+            )
 
     async def send_message():
         await client.start()  # Start the client
 
-        urls = open('download_links.txt', 'r').read().splitlines()
+        urls = open("download_links.txt", "r").read().splitlines()
         # d = get_page_source()
 
         for url in urls:
-            download_urls = url.split(',')
-            download_url  = [u for u in download_urls if 'filemoon.in' in u]
-            telegram_url  = [u for u in download_urls if 'telegram.php' in u]
+            download_urls = url.split(",")
+            download_url = [u for u in download_urls if "filemoon.in" in u]
+            telegram_url = [u for u in download_urls if "telegram.php" in u]
             if telegram_url:
                 # print(telegram_url)
                 # Send a message
 
                 time.sleep(5)
-                await client.send_message(recipient, f'/start {telegram_url[0].split('id=')[-1]}')
-
+                await client.send_message(
+                    recipient, f"/start {telegram_url[0].split('id=')[-1]}"
+                )
 
     # Run the client
     with client:
         client.loop.run_until_complete(send_message())
+
 
 if __name__ == "__main__":
     # get_lk21_download_url()
