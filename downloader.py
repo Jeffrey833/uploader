@@ -1,13 +1,14 @@
 import undetected_chromedriver as uc
 import bs4, time, os, subprocess
 
+from telethon import TelegramClient, types, events
 
 from selenium import webdriver
-from selenium.webdriver.common.by import By
+from selenium.webdriver.firefox.service import Service as FirefoxService
+from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-
-from telethon import TelegramClient, types, events
+from selenium.webdriver.common.by import By
 
 # Replace these with your own values
 api_id = os.getenv("API_ID")
@@ -18,7 +19,14 @@ group_id = ""
 
 
 def get_page_source(url: str = "https://google.com"):
-    d = uc.Chrome(version_main=129)
+    # Set up the WebDriver for Firefox
+    options = Options()
+    # Uncomment the line below if you want to run in headless mode
+    # options.add_argument("--headless")
+
+    # Create a new instance of the Firefox driver
+    d = webdriver.Firefox(service=FirefoxService(), options=options)
+    # d = uc.Chrome(version_main=129)
     d.get(url)
     try:
         WebDriverWait(d, 10).until(
