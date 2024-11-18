@@ -112,13 +112,13 @@ async def upload(file_to_upload, caption, title):
                 if timer.can_send():
                     percent = current * 100 / total
                     print(f"Upload {percent:.2f}%")
-                    await message.edit(f"Upload {percent:.2f}%")
+                    await message.edit(f"Uploading {percent:.2f}%")
 
             with open(file_to_upload, "rb") as file:
                 uploaded_file = await upload_file(client, file, title=title, progress_callback=progress_callback)
                 result = uploaded_file.to_dict()
                 await client.delete_messages(admin_user, [message.id])
-                await client.send_file(entity=admin_user, caption=caption, file=uploaded_file)
+                await client.send_message(entity=admin_user, caption=caption, file=uploaded_file)
 
             await client.disconnect()
 
