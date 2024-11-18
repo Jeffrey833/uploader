@@ -112,7 +112,7 @@ async def upload(file_to_upload, caption, title, image_url):
                 if timer.can_send():
                     percent = current * 100 / total
                     print(f"Upload {percent:.2f}%")
-                    await message.edit(f"Uploading {percent:.2f}%")
+                    await message.edit(f"Uploading with {session_name} {percent:.2f}%")
 
             with open(file_to_upload, "rb") as C:
                 D = await upload_file(client, C, title=title, progress_callback=progress_callback)
