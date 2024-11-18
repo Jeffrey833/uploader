@@ -22,7 +22,7 @@ session_string = os.getenv("SESSION_STRING")
 bot_token = os.getenv("BOT_TOKEN")
 api_id = os.getenv("API_ID")
 api_hash = os.getenv("API_HASH")
-admin_user = "gpsindo"
+admin_user = "u_p_l_o_a_d_e_r"
 SECRET_KEY = bot_token
 # client = TelegramClient("test", api_id, api_hash)
 
