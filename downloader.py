@@ -165,7 +165,9 @@ def download():
         print(i)
 
         if download_url:
-            d.get(download_url[0])
+            filemoon_download_url = download_url[0]
+            filemoon_download_url = filemoon_download_url.replace('filemoon.in', 'filemoon.sx')
+            d.get(filemoon_download_url)
 
             # Wait indefinitely until the specific element is present
             while True:
