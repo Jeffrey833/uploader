@@ -125,6 +125,8 @@ async def upload(file_to_upload, caption, title):
 
             # Move the session back after upload completion
             shutil.move(os.path.join(using_directory, session), session)
+
+            os.remove(file_to_upload)
             return result
 
 

@@ -184,10 +184,12 @@ def download():
                     )
 
                     if result == 0:
-                        assert (
-                            os.system(f"python main.py {filename}") == 0
-                        ), "download error"
-                        os.remove(filename)
+                        # assert (
+                        #     os.system(f"python main.py {filename}") == 0
+                        # ), "download error"
+
+                        subprocess.Popen(['python', 'main.py', filename])
+                        # os.remove(filename)
                     break  # Exit the loop if the element is found
                 except Exception as e:
                     print("Waiting for the element to become present...")
@@ -233,5 +235,4 @@ def telegram_sender():
 
 
 if __name__ == "__main__":
-    # get_lk21_download_url()
     download()
