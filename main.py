@@ -22,7 +22,7 @@ session_string = os.getenv("SESSION_STRING")
 bot_token = os.getenv("BOT_TOKEN")
 api_id = os.getenv("API_ID")
 api_hash = os.getenv("API_HASH")
-admin_user = "u_p_l_o_a_d_e_r"
+admin_user = "gpsindo"
 SECRET_KEY = bot_token
 # client = TelegramClient("test", api_id, api_hash)
 
@@ -195,8 +195,8 @@ if __name__ == "__main__":
     image_url = 'https://raw.githubusercontent.com/aN4ksaL4y/uploader/refs/heads/main/thumbnail.jpg'
     
 
-    # loop = asyncio.get_event_loop()
     asyncio.run(upload(file_to_upload=filename, caption=title, title=title, image_url=image_url))
-    # loop.close()
+    loop = asyncio.get_event_loop()
+    loop.close()
 
 
