@@ -94,40 +94,39 @@ async def upload(file_to_upload, caption, title):
     for session in current_session_files:
         if os.path.exists(os.path.join(using_directory, session)):
             print(f"Session '{session}' is currently in use. Skipping upload.")
-            return  # Skip the upload if the session is in use
+            continue  # Skip the upload if the session is in use
         
-        else:
+        # else:
+        session_name = session  # Use the first available session or modify as needed
+        # input(session_name)
+        client = TelegramClient(session_name, api_id, api_hash)
 
-            session_name = session  # Use the first available session or modify as needed
-            # input(session_name)
-            client = TelegramClient(session_name, api_id, api_hash)
+        async with client:
+            await client.start()
+            print("Client started. Uploading...")
+            timer = Timer()
+            message = await client.send_message(admin_user, "Uploading started")
+            shutil.copy(session_name, using_directory)
 
-            async with client:
-                await client.start()
-                print("Client started. Uploading...")
-                timer = Timer()
-                message = await client.send_message(admin_user, "Uploading started")
-                shutil.copy(session_name, using_directory)
+            async def progress_callback(current, total):
+                if timer.can_send():
+                    percent = current * 100 / total
+                    print(f"Upload {percent:.2f}%")
+                    await message.edit(f"Upload {percent:.2f}%")
 
-                async def progress_callback(current, total):
-                    if timer.can_send():
-                        percent = current * 100 / total
-                        print(f"Upload {percent:.2f}%")
-                        await message.edit(f"Upload {percent:.2f}%")
+            with open(file_to_upload, "rb") as file:
+                uploaded_file = await upload_file(client, file, title=title, progress_callback=progress_callback)
+                result = uploaded_file.to_dict()
+                await client.delete_messages(admin_user, [message.id])
+                await client.send_file(entity=admin_user, caption=caption, file=uploaded_file)
 
-                with open(file_to_upload, "rb") as file:
-                    uploaded_file = await upload_file(client, file, title=title, progress_callback=progress_callback)
-                    result = uploaded_file.to_dict()
-                    await client.delete_messages(admin_user, [message.id])
-                    await client.send_file(entity=admin_user, caption=caption, file=uploaded_file)
+            await client.disconnect()
 
-                await client.disconnect()
+        # Move the session back after upload completion
+        shutil.move(os.path.join(using_directory, session), session)
 
-            # Move the session back after upload completion
-            shutil.move(os.path.join(using_directory, session), session)
-
-            os.remove(file_to_upload)
-            return result
+        os.remove(file_to_upload)
+        return result
 
 
 
