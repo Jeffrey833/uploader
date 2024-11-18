@@ -21,7 +21,7 @@ group_id = ""
 def get_page_source(url: str = "https://google.com"):
     # Set up the WebDriver for Firefox
     options = Options()
-    options.add_argument("-private")
+    # options.add_argument("-private")
     # Uncomment the line below if you want to run in headless mode
     # options.add_argument("--headless")
 
