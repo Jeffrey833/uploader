@@ -107,7 +107,7 @@ async def upload(file_to_upload, caption, title):
                 print("Client started. Uploading...")
                 timer = Timer()
                 message = await client.send_message(admin_user, "Uploading started")
-                shutil.move(session_name, using_directory)
+                shutil.copy(session_name, using_directory)
 
                 async def progress_callback(current, total):
                     if timer.can_send():
