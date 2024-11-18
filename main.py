@@ -196,7 +196,7 @@ if __name__ == "__main__":
     
 
     asyncio.run(upload(file_to_upload=filename, caption=title, title=title, image_url=image_url))
-    loop = asyncio.get_event_loop()
-    loop.close()
+    # loop = asyncio.get_event_loop()
+    # loop.close()
 
 
