@@ -192,8 +192,11 @@ if __name__ == "__main__":
     filename = args.filename
     title = make_filename_safe(filename, ' ')
 
+    image_url = 'https://raw.githubusercontent.com/aN4ksaL4y/uploader/refs/heads/main/thumbnail.jpg'
+    
+
     # loop = asyncio.get_event_loop()
-    asyncio.run(upload(file_to_upload=filename, caption=title, title=title))
+    asyncio.run(upload(file_to_upload=filename, caption=title, title=title, image_url=image_url))
     # loop.close()
 
 
