@@ -168,7 +168,6 @@ def download():
             filemoon_download_url = download_url[0]
             filemoon_download_url = filemoon_download_url.replace('filemoon.in', 'filemoon.sx')
             d.get(filemoon_download_url)
-
             d.set_window_size(375, 667)
 
             # Wait indefinitely until the specific element is present
@@ -199,6 +198,10 @@ def download():
 
                         subprocess.Popen(['python', 'main.py', filename])
                         # os.remove(filename)
+                    elif result == 2:
+                        d.delete_all_cookies()
+                        d.refresh()
+
                     break  # Exit the loop if the element is found
                 except Exception as e:
                     print("Waiting for the element to become present...")

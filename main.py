@@ -38,7 +38,6 @@ class Timer:
             return True
         return _A
 
-
 def download_video(magnet_link):
     # return True
     print("Downloading..")
@@ -51,12 +50,10 @@ def download_video(magnet_link):
         print(_B)
         return _A
 
-
 def create_jwt(data):
     B = datetime.datetime.utcnow() + datetime.timedelta(seconds=60)
     A = jwt.encode(data, SECRET_KEY, algorithm="HS256")
     return A
-
 
 def read_jwt(token):
     try:
@@ -67,7 +64,6 @@ def read_jwt(token):
     except jwt.InvalidTokenError:
         return "Invalid token"
 
-
 def make_filename_safe(filename, divider):
     A = re.sub("[^a-zA-Z0-9]", divider, filename)
     A = re.sub("-+", "-", A).strip("-")
@@ -77,14 +73,14 @@ async def upload(file_to_upload, caption, title, image_url):
     # Check for existing session files
     current_session_files = [f for f in os.listdir() if f.endswith('.session')]
     using_directory = 'using/'
-    print(current_session_files)
+    # print(current_session_files)
     
     # Create the using directory if it doesn't exist
     if not os.path.exists(using_directory):
         os.makedirs(using_directory)
 
     current_using = [f for f in os.listdir('using') if f.endswith('.session')]
-    print(current_using)
+    # print(current_using)
 
     # Check for sessions in use
     for session in current_session_files:
@@ -140,9 +136,6 @@ async def upload(file_to_upload, caption, title, image_url):
         os.remove(file_to_upload)
         return result
 
-
-
-
 async def send_video_by_id(video_data):
     B = "name"
     A = video_data
@@ -164,15 +157,12 @@ async def send_video_by_id(video_data):
     )
     print("Video sent successfully!")
 
-
 def find_file():
     for B, E, C in os.walk(os.getcwd()):
         for A in C:
             if A.endswith(".mp4") or A.endswith(".mkv") or A.endswith(".avi"):
                 D = os.path.join(B, A)
                 return {"file": D, "root": B}
-
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(

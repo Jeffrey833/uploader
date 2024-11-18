@@ -97,7 +97,7 @@ fi
 
 if [ "$size_in_byte" -lt 300000000 ]; then
     printf "\e[33mContent length is less than 300 MB. Download skipped.\e[0m\n"
-    exit 1
+    exit 2
 fi
 
 size_per_slice=$(($size_in_byte/$slices))
