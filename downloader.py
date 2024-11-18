@@ -139,11 +139,12 @@ def get_lk21_download_url():
 def get_file_size_in_mb(file_path):
     # Get the file size in bytes
     file_size_bytes = os.path.getsize(file_path)
-    
+
     # Convert bytes to megabytes
     file_size_mb = file_size_bytes / (1024 * 1024)
-    
+
     return file_size_mb
+
 
 def download():
     urls = open("download_links.txt", "r").read().splitlines()
@@ -163,17 +164,22 @@ def download():
             continue
 
         print(i)
+        if i % 10 == 0:
+            d.delete_all_cookies()
+            d.refresh()
 
         if download_url:
             filemoon_download_url = download_url[0]
-            filemoon_download_url = filemoon_download_url.replace('filemoon.in', 'filemoon.sx')
+            filemoon_download_url = filemoon_download_url.replace(
+                "filemoon.in", "filemoon.sx"
+            )
             d.get(filemoon_download_url)
             d.set_window_size(375, 667)
 
             # Wait indefinitely until the specific element is present
             while True:
                 try:
-                    if 'Not Found' in d.title:
+                    if "Not Found" in d.title:
                         break
                     # Adjust the selector as needed to target the specific <a> element
                     element = WebDriverWait(d, 10).until(
@@ -181,7 +187,6 @@ def download():
                             (By.CSS_SELECTOR, "a.button[download]")
                         )
                     )
-                    
 
                     print(f"Download link appear")
                     download_link = element.get_attribute("href")
@@ -196,15 +201,15 @@ def download():
                         #     os.system(f"python main.py {filename}") == 0
                         # ), "download error"
 
-                        subprocess.Popen(['python', 'main.py', filename])
+                        subprocess.Popen(["python", "main.py", filename])
                         # os.remove(filename)
-                    elif result == 2:
-                        d.delete_all_cookies()
-                        d.refresh()
+                    # elif result == 2:
+                    #     d.delete_all_cookies()
+                    #     d.refresh()
 
                     break  # Exit the loop if the element is found
                 except Exception as e:
-                    print("Waiting for the element to become present...")
+                    print(e)
 
             # input()
 
