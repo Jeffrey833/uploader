@@ -24,7 +24,7 @@ api_id = os.getenv("API_ID")
 api_hash = os.getenv("API_HASH")
 admin_user = "u_p_l_o_a_d_e_r"
 SECRET_KEY = bot_token
-client = TelegramClient("test", api_id, api_hash)
+# client = TelegramClient("test", api_id, api_hash)
 
 
 class Timer:
@@ -74,34 +74,60 @@ def make_filename_safe(filename, divider):
     return A
 
 
-async def upload(file_to_upload, caption, title, image_url):
-    A = file_to_upload
-    async with client:
-        await client.start()
-        print("Client started. Listening for messages...")
-        E = Timer()
-        B = await client.send_message(admin_user, "Uploading started")
+import os
+import shutil
 
-        async def F(current, total):
-            if E.can_send():
-                print("{} {}%".format("Upload", current * 100 / total))
-                await B.edit("{} {}%".format("Upload", current * 100 / total))
+async def upload(file_to_upload, caption, title):
+    # Check for existing session files
+    current_session_files = [f for f in os.listdir() if f.endswith('.session')]
+    using_directory = 'using/'
+    print(current_session_files)
+    
+    # Create the using directory if it doesn't exist
+    if not os.path.exists(using_directory):
+        os.makedirs(using_directory)
 
-        with open(A, "rb") as C:
-            D = await upload_file(client, C, title=title, progress_callback=F)
-            result = D.to_dict()
-            G, H = utils.get_attributes(A)
-            I = InputMediaPhotoExternal(url=image_url)
-            J = types.InputMediaUploadedDocument(
-                file=D, mime_type=H, attributes=G, thumb=I, force_file=_A
-            )
-            C.close()
-            await client.delete_messages(admin_user, [B.id])
-            await client.send_file(entity=admin_user, caption=caption, file=J)
+    current_using = [f for f in os.listdir('using') if f.endswith('.session')]
+    print(current_using)
 
-            # await asyncio.sleep(3)
-        await client.disconnect()
-    return result
+    # Check for sessions in use
+    for session in current_session_files:
+        if os.path.exists(os.path.join(using_directory, session)):
+            print(f"Session '{session}' is currently in use. Skipping upload.")
+            return  # Skip the upload if the session is in use
+        
+        else:
+
+            session_name = session  # Use the first available session or modify as needed
+            # input(session_name)
+            client = TelegramClient(session_name, api_id, api_hash)
+
+            async with client:
+                await client.start()
+                print("Client started. Uploading...")
+                timer = Timer()
+                message = await client.send_message(admin_user, "Uploading started")
+                shutil.move(session_name, using_directory)
+
+                async def progress_callback(current, total):
+                    if timer.can_send():
+                        percent = current * 100 / total
+                        print(f"Upload {percent:.2f}%")
+                        await message.edit(f"Upload {percent:.2f}%")
+
+                with open(file_to_upload, "rb") as file:
+                    uploaded_file = await upload_file(client, file, title=title, progress_callback=progress_callback)
+                    result = uploaded_file.to_dict()
+                    await client.delete_messages(admin_user, [message.id])
+                    await client.send_file(entity=admin_user, caption=caption, file=uploaded_file)
+
+                await client.disconnect()
+
+            # Move the session back after upload completion
+            shutil.move(os.path.join(using_directory, session), session)
+            return result
+
+
 
 
 async def send_video_by_id(video_data):
@@ -149,8 +175,8 @@ if __name__ == "__main__":
     filename = args.filename
     title = make_filename_safe(filename, ' ')
 
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(upload(file_to_upload=filename, caption=title, title=title, image_url='https://bogus.image'))
-    loop.close()
+    # loop = asyncio.get_event_loop()
+    asyncio.run(upload(file_to_upload=filename, caption=title, title=title))
+    # loop.close()
 
 
