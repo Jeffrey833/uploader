@@ -81,7 +81,7 @@ file_to_save=${url_no_query##*/}
 [ x$output != x ] && file_to_save=$output
 
 echo "Download $url to $file_to_save with $slices tasks."
-
+echo $file_to_save > "last.txt"
 size_in_byte=$(curl -I "$url" 2>/dev/null | sed -n 's/\([Cc]ontent-[Ll]ength:\)\(.*\)/\2/p' | tr -d [[:space:]])
 
 if ! [[ $size_in_byte =~ ^[0-9]+$ ]];then
