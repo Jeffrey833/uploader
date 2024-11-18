@@ -178,6 +178,9 @@ def download():
                             (By.CSS_SELECTOR, "a.button[download]")
                         )
                     )
+                    if 'Not Found' in d.title:
+                        break
+                    
                     print(f"Download link appear")
                     download_link = element.get_attribute("href")
 
