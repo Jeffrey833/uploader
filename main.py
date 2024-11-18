@@ -14,7 +14,7 @@ from telethon.tl.types import (
     DocumentAttributeVideo,
     InputMediaUploadedDocument,
 )
-import requests, argparse, re, time, os, json, jwt, subprocess, datetime, asyncio
+import requests, argparse, re, time, os, json, jwt, subprocess, datetime, asyncio, shutil
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -73,10 +73,6 @@ def make_filename_safe(filename, divider):
     A = re.sub("-+", "-", A).strip("-")
     return A
 
-
-import os
-import shutil
-
 async def upload(file_to_upload, caption, title, image_url):
     # Check for existing session files
     current_session_files = [f for f in os.listdir() if f.endswith('.session')]
@@ -112,7 +108,7 @@ async def upload(file_to_upload, caption, title, image_url):
                 if timer.can_send():
                     percent = current * 100 / total
                     print(f"Uploading with {session_name} {percent:.2f}%")
-                    await message.edit(f"Uploading with {session_name} {percent:.2f}%")
+                    await message.edit(f"Uploading with {session_name} {percent}%")
 
             with open(file_to_upload, "rb") as C:
                 D = await upload_file(client, C, title=title, progress_callback=progress_callback)
