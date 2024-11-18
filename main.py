@@ -77,7 +77,7 @@ def make_filename_safe(filename, divider):
 import os
 import shutil
 
-async def upload(file_to_upload, caption, title):
+async def upload(file_to_upload, caption, title, image_url):
     # Check for existing session files
     current_session_files = [f for f in os.listdir() if f.endswith('.session')]
     using_directory = 'using/'
@@ -114,11 +114,27 @@ async def upload(file_to_upload, caption, title):
                     print(f"Upload {percent:.2f}%")
                     await message.edit(f"Uploading {percent:.2f}%")
 
-            with open(file_to_upload, "rb") as file:
-                uploaded_file = await upload_file(client, file, title=title, progress_callback=progress_callback)
-                result = uploaded_file.to_dict()
+            with open(file_to_upload, "rb") as C:
+                D = await upload_file(client, C, title=title, progress_callback=progress_callback)
+                result = D.to_dict()
+                G, H = utils.get_attributes(file_to_upload)
+                I = InputMediaPhotoExternal(url=image_url)
+                J = types.InputMediaUploadedDocument(
+                    file=D, mime_type=H, attributes=G, thumb=I, force_file=False
+                )
+                # C.close()
                 await client.delete_messages(admin_user, [message.id])
-                await client.send_message(entity=admin_user, caption=caption, file=uploaded_file)
+                await client.send_file(entity=admin_user, caption=caption, file=J)
+
+            # I = InputMediaPhotoExternal(url=image_url)
+            # J = types.InputMediaUploadedDocument(
+            #     file=D, mime_type='video/mp4', attributes=G, thumb=I, force_file=_A
+            # )
+            # with open(file_to_upload, "rb") as file:
+            #     uploaded_file = await upload_file(client, file, title=title, progress_callback=progress_callback)
+            #     result = uploaded_file.to_dict()
+            #     await client.delete_messages(admin_user, [message.id])
+            #     await client.send_message(entity=admin_user, caption=caption, file=uploaded_file)
 
             await client.disconnect()
 
