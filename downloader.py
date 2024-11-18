@@ -172,15 +172,16 @@ def download():
             # Wait indefinitely until the specific element is present
             while True:
                 try:
+                    if 'Not Found' in d.title:
+                        break
                     # Adjust the selector as needed to target the specific <a> element
                     element = WebDriverWait(d, 10).until(
                         EC.presence_of_element_located(
                             (By.CSS_SELECTOR, "a.button[download]")
                         )
                     )
-                    if 'Not Found' in d.title:
-                        break
                     
+
                     print(f"Download link appear")
                     download_link = element.get_attribute("href")
 
