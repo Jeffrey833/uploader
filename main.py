@@ -26,7 +26,8 @@ admin_user = "u_p_l_o_a_d_e_r"
 SECRET_KEY = bot_token
 # client = TelegramClient("test", api_id, api_hash)
 
-
+GREEN = '\033[0;32m'  # Green color
+NC = '\033[0m'        # No Color (reset)
 class Timer:
     def __init__(A, time_between=2):
         A.start_time = time.time()
@@ -105,7 +106,7 @@ async def upload(file_to_upload, caption, title, image_url):
             async def progress_callback(current, total):
                 if timer.can_send():
                     percent = current * 100 / total
-                    print(f"Uploading with {session_name} {percent:.2f}%")
+                    print(f"\tUploading with {GREEN}{session_name}{NC} {percent:.2f}%")
                     await message.edit(f"Uploading with {session_name} {percent}%")
 
             with open(file_to_upload, "rb") as C:
