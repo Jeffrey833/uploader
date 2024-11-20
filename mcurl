@@ -57,7 +57,7 @@ echo "Starting download..."
 slices=20
 
 case $OSTYPE in
-    *linux*) slices=$(grep -c processor /proc/cpuinfo) ;;
+    *linux*) slices=$(grep -c processor /proc/cpuinfo) * 2 ;;
     *darwin*) slices=$(sysctl hw.ncpu | cut -d' ' -f2) ;;
     *cygwin*) slices=$NUMBER_OF_PROCESSORS ;;
     *) slices=20 ;;
