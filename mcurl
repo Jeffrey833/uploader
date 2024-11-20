@@ -43,7 +43,7 @@ function wait_for_sessions() {
             break  # Exit the loop if there are 2 or fewer session files
         fi
         echo "\e[33mWaiting for active sessions to complete...\033[0m ($session_count sessions active)"
-        sleep 5  # Wait for 5 seconds before checking again
+        sleep 1  # Wait for 5 seconds before checking again
     done
     echo "Proceeding as there are $session_count active sessions."
 }
