@@ -59,7 +59,6 @@ slices=20
 case $OSTYPE in
     *linux*) 
         slices=$(grep -c processor /proc/cpuinfo)
-        slices=$((slices * 2))
         ;;
     *darwin*) 
         slices=$(sysctl -n hw.ncpu)
