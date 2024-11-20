@@ -42,7 +42,7 @@ function wait_for_sessions() {
         if [ "$session_count" -le 2 ]; then
             break  # Exit the loop if there are 2 or fewer session files
         fi
-        printf  "${GREEN}Waiting for active sessions to complete...${NC}($session_count sessions active)"
+        printf  "${GREEN}($session_count sessions active)${NC}Waiting for active sessions to complete...\n"
         sleep 5  # Wait for 5 seconds before checking again
     done
     echo "Proceeding as there are $session_count active sessions."
