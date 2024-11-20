@@ -177,7 +177,8 @@ def download():
                 "filemoon.in", "filemoon.sx"
             )
             d.get(filemoon_download_url)
-            d.set_window_size(375, 667)
+            d.set_window_size(489, 667)
+            d.refresh()
 
             # Wait indefinitely until the specific element is present
             while True:
