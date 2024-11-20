@@ -17,6 +17,9 @@ api_hash = os.getenv("API_HASH")
 recipient = ""  # Username or ID of the recipient
 group_id = ""
 
+# Define color codes
+GREEN = '\033[0;32m'  # Green color
+NC = '\033[0m'        # No Color (reset)
 
 def get_page_source(url: str = "https://google.com"):
     # Set up the WebDriver for Firefox
@@ -209,7 +212,8 @@ def download():
 
                     break  # Exit the loop if the element is found
                 except Exception as e:
-                    print(e)
+                    # print(e)
+                    print(f"{GREEN}Lagi nungguin tombol download..{NC}")
 
             # input()
 

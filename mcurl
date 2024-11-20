@@ -24,6 +24,15 @@
 #         NAME:  wait_for_sessions
 #  DESCRIPTION:  Wait until there are two or fewer session files in the using/ directory.
 #===============================================================================
+
+
+# Define color codes
+GREEN='\033[0;32m'  # Green color
+NC='\033[0m'       # No Color (reset)
+
+# Print the string in green
+# echo -e "${GREEN}This is a green string.${NC}"
+
 function wait_for_sessions() {
     local dir="using/"
     local session_count
@@ -33,7 +42,7 @@ function wait_for_sessions() {
         if [ "$session_count" -le 2 ]; then
             break  # Exit the loop if there are 2 or fewer session files
         fi
-        echo "Waiting for active sessions to complete... ($session_count sessions active)"
+        echo "${GREEN}Waiting for active sessions to complete...${NC} ($session_count sessions active)"
         sleep 5  # Wait for 5 seconds before checking again
     done
     echo "Proceeding as there are $session_count active sessions."

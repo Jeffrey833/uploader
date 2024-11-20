@@ -96,6 +96,8 @@ async def upload(file_to_upload, caption, title, image_url):
         async with client:
             await client.start()
             print("Client started. Uploading...")
+
+            
             timer = Timer()
             message = await client.send_message(admin_user, "Uploading started")
             shutil.copy(session_name, using_directory)
