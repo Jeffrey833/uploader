@@ -20,6 +20,31 @@
 # v0.1        initial version
 # v0.1.1      add output option
 
+#===  FUNCTION  ================================================================
+#         NAME:  wait_for_sessions
+#  DESCRIPTION:  Wait until there are two or fewer session files in the using/ directory.
+#===============================================================================
+function wait_for_sessions() {
+    local dir="using/"
+    local session_count
+
+    while true; do
+        session_count=$(ls -1 "${dir}" | wc -l)  # Count the number of files in the directory
+        if [ "$session_count" -le 2 ]; then
+            break  # Exit the loop if there are 2 or fewer session files
+        fi
+        echo "Waiting for active sessions to complete... ($session_count sessions active)"
+        sleep 5  # Wait for 5 seconds before checking again
+    done
+    echo "Proceeding as there are $session_count active sessions."
+}
+
+# Call the function to wait for active sessions to complete
+wait_for_sessions
+
+# Proceed with the rest of the script, e.g., starting a new download
+echo "Starting download..."
+
 slices=20
 
 case $OSTYPE in
