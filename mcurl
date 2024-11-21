@@ -39,7 +39,7 @@ function wait_for_sessions() {
 
     while true; do
         session_count=$(ls -1 "${dir}" | wc -l)  # Count the number of files in the directory
-        if [ "$session_count" -le 2 ]; then
+        if [ "$session_count" -le 1 ]; then
             break  # Exit the loop if there are 2 or fewer session files
         fi
         printf  "(${GREEN}$session_count active sessions${NC}) Waiting for active sessions to complete...\n"
