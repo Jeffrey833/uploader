@@ -197,7 +197,7 @@ def download():
 
                     filename = f"{slug}.mp4"
                     result = os.system(
-                        f"bash mcurl -s 8 -o '{filename}' '{download_link}'"
+                        f"bash mcurlv2.sh -s 8 -o '{filename}' '{download_link}'"
                     )
 
                     if result == 0:
