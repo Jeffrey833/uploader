@@ -43,7 +43,7 @@ def get_page_source(url: str = "https://google.com"):
     return d
 
 
-def get_slug(page_source: str):
+def get_slug(page_source: str, filename: str):
     soup = bs4.BeautifulSoup(page_source, "html.parser")
 
     # Find all <figure> elements with class 'grid-poster'
@@ -57,7 +57,7 @@ def get_slug(page_source: str):
             links.append(a_tag["href"])
 
     if links:
-        with open("slug.txt", "a+") as file:
+        with open(filename, "a+") as file:
             file.write("\n".join([v for v in links]))
             file.write("\n")
 
@@ -218,6 +218,52 @@ def download():
 
             # input()
 
+def direct_download(url: str, slug: str):
+    d = get_page_source()
+    filemoon_download_url = url.replace(
+        "filemoon.in", "filemoon.sx"
+    )
+    d.get(filemoon_download_url)
+    d.set_window_size(489, 667)
+    d.refresh()
+
+    # Wait indefinitely until the specific element is present
+    while True:
+        try:
+            if "Not Found" in d.title:
+                break
+            # Adjust the selector as needed to target the specific <a> element
+            element = WebDriverWait(d, 10).until(
+                EC.presence_of_element_located(
+                    (By.CSS_SELECTOR, "a.button[download]")
+                )
+            )
+
+            print(f"Download link appear")
+            download_link = element.get_attribute("href")
+
+            filename = f"{slug}.mp4"
+            result = os.system(
+                f"bash mcurl -s 8 -o '{filename}' '{download_link}'"
+            )
+
+            if result == 0:
+                # assert (
+                #     os.system(f"python main.py {filename}") == 0
+                # ), "download error"
+
+                subprocess.Popen(["python", "main.py", filename])
+                # os.remove(filename)
+            # elif result == 2:
+            #     d.delete_all_cookies()
+            #     d.refresh()
+
+            break  # Exit the loop if the element is found
+        except Exception as e:
+            # print(e)
+            print(f"{GREEN}Lagi nungguin tombol download..{NC}")
+
+    # input()
 
 def telegram_sender():
     client = TelegramClient("iuploadyou", api_id, api_hash)
@@ -256,5 +302,29 @@ def telegram_sender():
         client.loop.run_until_complete(send_message())
 
 
+def get_top_movie():
+    BASE_URL = 'https://tv.lk21official.pics/top-movie-today'
+
+    MAX_PAGE = 1134
+    d = get_page_source()
+
+    for c in range(MAX_PAGE):
+        try:
+            url = f'{BASE_URL}/page/{c}'
+            
+            d.get(url)
+            page_source = d.page_source
+            get_slug(page_source, 'slug_top_movie.txt')
+            if "404" in d.title:
+                break
+
+        except Exception as e:
+            print({"error":e})
+            continue
+
+
 if __name__ == "__main__":
-    download()
+    # download()
+    # direct_download('https://filemoon.in/download/y3asnqmmn2ue', 'zombieland-double-tap-2019')
+
+    get_top_movie()
