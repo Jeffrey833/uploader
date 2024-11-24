@@ -271,7 +271,7 @@ def download():
         link = open('iniDownloadLink.temp', 'r').read().splitlines()
         print('len link', len(link))
 
-        if len(link)>=5:
+        if len(link)>=10:
             input('saatnyua download y/n')
             for l in link:
                 dlink = l.split(' || ')[0]
@@ -301,6 +301,7 @@ def download():
             d.get(filemoon_download_url)
             d.set_window_size(667, 667)
             time.sleep(2)
+            print('refresing..')
 
             d.refresh()
 
