@@ -4,7 +4,7 @@ from telethon import TelegramClient,events,utils
 from telethon.errors import ChatAdminRequiredError,UserNotParticipantError
 from telethon.sync import TelegramClient
 from telethon.sessions import StringSession
-from fasttelethon import upload_file,download_file
+# from fasttelethon import upload_file,download_file
 from telethon.tl import types
 from telethon import TelegramClient
 from telethon.tl.types import InputFile,InputMediaPhotoExternal,DocumentAttributeFilename,DocumentAttributeVideo,InputMediaUploadedDocument
