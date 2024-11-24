@@ -267,8 +267,8 @@ def download():
         download_url = [u for u in urls if "filemoon.in" in u]
         telegram_url = [u for u in urls if "telegram.php" in u]
 
-        file = open('iniDownloadLink.temp', 'a+')
-        link = file.read().splitlines()
+        file = open('iniDownloadLink.temp', 'a+').read().splitlines()
+        link = open('iniDownloadLink.temp', 'r').read().splitlines()
         print('len link', len(link))
 
         if len(link)>=3:
