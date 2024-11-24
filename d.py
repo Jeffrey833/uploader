@@ -278,6 +278,7 @@ def download():
                 fname = l.split(' || ')[1]
                 try:
                     assert os.system(f'bash mcurl -s 8 -o "{fname}" "{dlink}"') == 0, 'download error'
+                    subprocess.Popen(['python', 'main.py', fname])
                 except AssertionError:
                     print('download error ko')
 
