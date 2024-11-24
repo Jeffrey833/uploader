@@ -25,14 +25,15 @@ function wait_for_sessions() {
     printf "Proceeding as there are %s active sessions.\n" "$session_count"
 }
 
-# Function to store the download URL and filename
 function store_url() {
     local url="$1"
     local filename="$2"
     
+    # Ensure filename does not have unwanted characters
+    filename=$(echo "$filename" | tr -d '[:space:]')  # Remove spaces if needed
+
     echo "$url -> $filename" >> "$url_file"
 }
-
 # Function to check if we have enough URLs to start downloads
 function check_ready_to_download() {
     local url_count
@@ -45,8 +46,8 @@ function check_ready_to_download() {
 
 # Function to confirm the input
 function confirm_input() {
-    echo "$url"
-    echo "$filename"
+    echo url "$url"
+    echo filename "$filename"
     read -rp "Are these entries correct? (y/n): " confirmation
 
     if [[ "$confirmation" != "y" && "$confirmation" != "Y" ]]; then
@@ -56,6 +57,7 @@ function confirm_input() {
 
     echo "Confirmed."
     ./mcurl.sh -o "$filename" "$url"
+
     echo "check downloaded file"
     read -rp "cek download udah? (y/n): " confirmation
 
@@ -74,6 +76,7 @@ function start_downloads() {
     # Process each URL
     for entry in "${urls[@]}"; do
         IFS=" -> " read -r url filename <<< "$entry"
+
         wait_for_sessions
         echo "Starting download of $url to $filename"
 
