@@ -269,6 +269,7 @@ def download():
 
         file = open('iniDownloadLink.temp', 'a+')
         link = file.read().splitlines()
+        print('len link', len(link))
 
         if len(link)>=3:
             input('saatnyua download y/n')
@@ -319,6 +320,7 @@ def download():
 
                     file.write(f'{download_link} || {filename}')
                     file.write('\n')
+                    file.close()
                     break
 
                         
