@@ -54,7 +54,7 @@ function start_downloads() {
         wait_for_sessions
         echo "Starting download of $url to $filename"
 
-        mcurl.sh -s 8 -o "$filename" "$url"
+        bash mcurl.sh -s 8 -o "$filename" "$url"
 
         # Download logic goes here (similar to original script)
         # Initialize slices and other parameters as needed
