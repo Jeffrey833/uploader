@@ -210,7 +210,7 @@ def download():
         E = open(D, "a+")
         F = open(D, "r").read().splitlines()
         print("len link", len(F))
-        if len(F) >= 10:
+        if len(F) >= 14:
             input(f"saatnyua download {GREEN}(!){NC} ")
             for J in F:
                 O = J.split(H)[0]
