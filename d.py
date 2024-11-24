@@ -276,8 +276,11 @@ def download():
             for l in link:
                 dlink = l.split(' || ')[0]
                 fname = l.split(' || ')[1]
-                assert os.system(f'bash mcurl -s 8 -o "{fname}" "{dlink}"') == 0, 'download error'
-
+                try:
+                    assert os.system(f'bash mcurl -s 8 -o "{fname}" "{dlink}"') == 0, 'download error'
+                except AssertionError:
+                    print('download error ko')
+        
         if telegram_url:
             print("skipping", i)
             continue
