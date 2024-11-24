@@ -149,74 +149,6 @@ def get_file_size_in_mb(file_path):
     return file_size_mb
 
 
-def download():
-    urls = open("download_links.txt", "r").read().splitlines()
-    d = get_page_source()
-
-    i = 0
-    download_urls = [url.split(",") for url in urls]
-    for urls in download_urls:
-        i += 1
-
-        slug = urls[0]
-        download_url = [u for u in urls if "filemoon.in" in u]
-        telegram_url = [u for u in urls if "telegram.php" in u]
-
-        if telegram_url:
-            print("skipping", i)
-            continue
-
-        print(i)
-        if i % 10 == 0:
-            d.delete_all_cookies()
-            d.refresh()
-
-        if download_url:
-            filemoon_download_url = download_url[0]
-            filemoon_download_url = filemoon_download_url.replace(
-                "filemoon.in", "filemoon.sx"
-            )
-            d.get(filemoon_download_url)
-            d.set_window_size(489, 667)
-            d.refresh()
-
-            # Wait indefinitely until the specific element is present
-            while True:
-                try:
-                    if "Not Found" in d.title:
-                        break
-                    # Adjust the selector as needed to target the specific <a> element
-                    element = WebDriverWait(d, 10).until(
-                        EC.presence_of_element_located(
-                            (By.CSS_SELECTOR, "a.button[download]")
-                        )
-                    )
-
-                    print(f"Download link appear")
-                    download_link = element.get_attribute("href")
-
-                    filename = f"{slug}.mp4"
-                    result = os.system(
-                        f"bash mcurlv3.sh -o \"{filename}\" \"{download_link}\""
-                    )
-
-                    # if result == 0:
-                        # assert (
-                        #     os.system(f"python main.py {filename}") == 0
-                        # ), "download error"
-
-                        # subprocess.Popen(["python", "main.py", filename])
-                        # os.remove(filename)
-                    # elif result == 2:
-                    #     d.delete_all_cookies()
-                    #     d.refresh()
-
-                    break  # Exit the loop if the element is found
-                except Exception as e:
-                    # print(e)
-                    print(f"{GREEN}Lagi nungguin tombol download..{NC}")
-
-            # input()
 
 def direct_download(url: str, slug: str):
     d = get_page_source()
@@ -322,6 +254,90 @@ def get_top_movie():
             print({"error":e})
             continue
 
+def download():
+    urls = open("download_links.txt", "r").read().splitlines()
+    d = get_page_source()
+
+    i = 0
+    download_urls = [url.split(",") for url in urls]
+    for urls in download_urls:
+        i += 1
+
+        slug = urls[0]
+        download_url = [u for u in urls if "filemoon.in" in u]
+        telegram_url = [u for u in urls if "telegram.php" in u]
+
+        if telegram_url:
+            print("skipping", i)
+            continue
+
+        print(i)
+        if i % 10 == 0:
+            d.delete_all_cookies()
+            d.refresh()
+
+        if download_url:
+            filemoon_download_url = download_url[0]
+            filemoon_download_url = filemoon_download_url.replace(
+                "filemoon.in", "filemoon.sx"
+            )
+            d.get(filemoon_download_url)
+            d.set_window_size(489, 667)
+            d.refresh()
+
+            # Wait indefinitely until the specific element is present
+            while True:
+                try:
+                    if "Not Found" in d.title:
+                        break
+                    # Adjust the selector as needed to target the specific <a> element
+                    element = WebDriverWait(d, 10).until(
+                        EC.presence_of_element_located(
+                            (By.CSS_SELECTOR, "a.button[download]")
+                        )
+                    )
+
+                    print(f"Download link appear")
+                    download_link = element.get_attribute("href")
+
+                    filename = f"{slug}.mp4"
+                    # result = os.system(
+                    #     f"bash mcurlv3.sh -o \"{filename}\" \"{download_link}\""
+                    # )
+
+                    with open('iniDownloadLink.temp', 'a+') as file:
+                        link = file.read().splitlines()
+                        if len(link)>=3:
+                            input('saatnyua download y/n')
+
+                            for l in link:
+                                dlink = l.split(' || ')[0]
+                                fname = l.split(' || ')[1]
+
+                                assert os.system(f'bash mcurl -s 8 -o "{fname}" "{dlink}"') == 0, 'download error'
+
+                        file.write(f'{download_link} || {filename}')
+                        file.write('\n')
+
+                        
+
+                    # if result == 0:
+                        # assert (
+                        #     os.system(f"python main.py {filename}") == 0
+                        # ), "download error"
+
+                        # subprocess.Popen(["python", "main.py", filename])
+                        # os.remove(filename)
+                    # elif result == 2:
+                    #     d.delete_all_cookies()
+                    #     d.refresh()
+
+                    break  # Exit the loop if the element is found
+                except Exception as e:
+                    # print(e)
+                    print(f"{GREEN}Lagi nungguin tombol download..{NC}")
+
+            # input()
 
 if __name__ == "__main__":
     download()
