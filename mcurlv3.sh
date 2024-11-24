@@ -38,9 +38,32 @@ function check_ready_to_download() {
     local url_count
     url_count=$(wc -l < "$url_file")  # Separate assignment
     
-    if [ "$url_count" -ge 10 ]; then
+    if [ "$url_count" -ge 3 ]; then
         start_downloads
     fi
+}
+
+# Function to confirm the input
+function confirm_input() {
+    echo "$url"
+    echo "$filename"
+    read -rp "Are these entries correct? (y/n): " confirmation
+
+    if [[ "$confirmation" != "y" && "$confirmation" != "Y" ]]; then
+        echo "Please re-enter the details."
+        return 1
+    fi
+
+    echo "Confirmed."
+    ./mcurl.sh -o "$filename" "$url"
+    echo "check downloaded file"
+    read -rp "cek download udah? (y/n): " confirmation
+
+    if [[ "$confirmation" != "y" && "$confirmation" != "Y" ]]; then
+        echo "Please re-enter the details."
+        return 1
+    fi
+    python main.py "$filename"
 }
 
 # Function to start downloads
@@ -54,17 +77,15 @@ function start_downloads() {
         wait_for_sessions
         echo "Starting download of $url to $filename"
 
-        bash mcurl.sh -s 8 -o "$filename" "$url"
-
+        confirm_input
         # Download logic goes here (similar to original script)
         # Initialize slices and other parameters as needed
 
         # Trigger Python script after download finishes
-        python main.py "$filename"
     done
 
     # Remove the processed entries from the original file
-    sed -i '1,10d' "$url_file"  # Remove the first 10 lines
+    sed -i '1,3d' "$url_file"  # Remove the first 10 lines
 }
 
 # Main script logic to handle command line arguments
