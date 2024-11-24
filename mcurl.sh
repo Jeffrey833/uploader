@@ -38,11 +38,11 @@ function wait_for_sessions() {
     local session_count
 
     while true; do
-        session_count=$(ls -1 "${dir}" | wc -l)  # Count the number of files in the directory
+        session_count=$(find -name "${dir}" -type d | wc -l)  # Count the number of files in the directory
         if [ "$session_count" -le 1 ]; then
             break  # Exit the loop if there are 2 or fewer session files
         fi
-        printf  "(${GREEN}$session_count active sessions${NC}) Waiting for active sessions to complete...\n"
+        printf  "(${GREEN}$session_count%s active sessions${NC}) Waiting for active sessions to complete...\n"
         sleep 5  # Wait for 5 seconds before checking again
     done
     echo "Proceeding as there are $session_count active sessions."
@@ -109,12 +109,12 @@ do
 	    usage; exit 1   ;;
     esac    # --- end of case ---
 done
-shift $(($OPTIND-1))
+shift $((OPTIND-1))
 
-url=${@: -1}
+url=${*: -1}
 
 if ! [[ $url =~ ^https?://.*$ ]];then
-    printf "\e[31mInvalid URL $url\e[0m\n"
+    printf "\e[31mInvalid URL $url%s\e[0m\n"
     usage
     exit 1
 fi
@@ -122,11 +122,12 @@ fi
 url_no_query=${url%%\?*}
 file_to_save=${url_no_query##*/}
 
-[ x$output != x ] && file_to_save=$output
+[ x"$output" != x ] && file_to_save=$output
 
 echo "Download $url to $file_to_save with $slices tasks."
-echo $file_to_save > "last.txt"
-size_in_byte=$(curl -I "$url" 2>/dev/null | sed -n 's/\([Cc]ontent-[Ll]ength:\)\(.*\)/\2/p' | tr -d [[:space:]])
+echo "$file_to_save" > "last.txt"
+
+size_in_byte=$(curl -I "$url" 2>/dev/null | sed -n 's/\([Cc]ontent-[Ll]ength:\)\(.*\)/\2/p' | tr -d '[:space:]')
 
 if ! [[ $size_in_byte =~ ^[0-9]+$ ]];then
     printf "\e[31mCould not get content length, make sure your resource have content length response.\e[0m\n"
@@ -144,20 +145,20 @@ if [ "$size_in_byte" -lt 300000000 ]; then
     exit 1
 fi
 
-size_per_slice=$(($size_in_byte/$slices))
-let size_per_slice=${size_per_slice}+1  # avoid rounding issue
+size_per_slice=$((size_in_byte/slices))
+((size_per_slice=size_per_slice+1))
 
 total_slice=${slices}
-finished_slice=0
+
 is_finished=0
 function callback()
 {
 	subp=$(pgrep -P $$ | wc -l)
-	if [  $subp -eq 1 ];then
-		for s in `seq $total_slice`
+	if [  "$subp" -eq 1 ];then
+		for s in $(seq "$total_slice")
 		do
-			cat $$.$s >> "${file_to_save}"
-			rm $$.$s
+			cat $$."$s" >> "${file_to_save}"
+			rm $$."$s"
 		done
 		is_finished=1
 	fi
@@ -165,20 +166,20 @@ function callback()
 
 function run()
 {
-	curl -r $2-$3 $url -o $1 2>/dev/null && kill -n 10 $$ &
+	curl -r "$2"-"$3" "$url" -o "$1" 2>/dev/null && kill -n 10 $$ &
 }
 
-trap callback 10
+trap callback WINCH
 
 start_time=$(date +%s)
-for s in `seq $total_slice`
+for s in $(seq "$total_slice")
 do
-	begin=$((($s-1)*${size_per_slice}))
+	begin=$(((s-1)*size_per_slice))
 	if [ $begin -ne 0 ];then
 		begin=$((begin+=1))
 	fi
-	end=$(($s*$size_per_slice))
-	if [ $end -gt $size_in_byte ];then
+	end=$((s*size_per_slice))
+	if [ $end -gt "$size_in_byte" ];then
 		end=
 	fi
 	run $$.$s $begin $end
@@ -188,8 +189,8 @@ until [ $is_finished -eq 1 ]
 do
 	if [ -f $$.1 ];then
 		total_kb=$(BLOCKSIZE=1024 du -k $$.* | awk '{t+=$1}END{printf "%d", t}')
-		duration=$((`date +%s`-$start_time))
-		[ $duration -gt 0 ] && printf "\rCurrent average speed %4d KiB/s" $(($total_kb/$duration))
+		duration=$(($(date +%s)-start_time))
+		[ $duration -gt 0 ] && printf "\rCurrent average speed %4d KiB/s" $((total_kb/duration))
 	fi
 	sleep 1
 done

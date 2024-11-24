@@ -132,7 +132,6 @@ if [ $# -lt 1 ]; then
 fi
 
 url=${1}
-shift $((OPTIND-1))
 
 # url=${*: -1}
 
@@ -145,7 +144,7 @@ fi
 url_no_query=${url%%\?*}
 file_to_save=${url_no_query##*/}
 
-[ x"$output" != x ] && file_to_save=$output
+# [ x"$output" != x ] && file_to_save=$output
 
 # Store the URL and filename
 store_url "$url" "$file_to_save"
