@@ -280,6 +280,8 @@ def download():
                     assert os.system(f'bash mcurl -s 8 -o "{fname}" "{dlink}"') == 0, 'download error'
                 except AssertionError:
                     print('download error ko')
+
+            os.remove('iniDownloadLink.temp')
         
         if telegram_url:
             print("skipping", i)
