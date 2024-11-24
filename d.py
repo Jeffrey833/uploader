@@ -278,7 +278,7 @@ def download():
                 fname = l.split(' || ')[1]
                 try:
                     assert os.system(f'bash mcurl -s 8 -o "{fname}" "{dlink}"') == 0, 'download error'
-                    subprocess.Popen(['python', 'main.py', fname])
+                    subprocess.Popen(["python", "main.py", fname])
                 except AssertionError:
                     print('download error ko')
 
@@ -346,7 +346,7 @@ def download():
 
                 except Exception as e:
                     # print(e)
-                    print(f"{GREEN}Lagi nungguin tombol download..{NC}")
+                    print(f"{GREEN}Lagi nungguin tombol download..{NC}", e)
 
             # input()
 
