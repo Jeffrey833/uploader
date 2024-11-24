@@ -269,7 +269,7 @@ def download():
 
         file = open('iniDownloadLink.temp', 'a+')
         link = file.read().splitlines()
-        
+
         if len(link)>=3:
             input('saatnyua download y/n')
             for l in link:
@@ -317,10 +317,8 @@ def download():
                     #     f"bash mcurlv3.sh -o \"{filename}\" \"{download_link}\""
                     # )
 
-                    if not len(link)>=3:
-                        file.write(f'{download_link} || {filename}')
-                        file.write('\n')
-
+                    file.write(f'{download_link} || {filename}')
+                    file.write('\n')
                     break
 
                         
