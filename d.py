@@ -219,7 +219,7 @@ def download():
                     assert (
                         os.system(f'bash mcurl.sh -s 8 -o "{K}" "{O}"') == 0
                     ), "download error"
-                    subprocess.Popen(["./upload/main", K])
+                    subprocess.Popen(["python", "main.py" , K])
                 except AssertionError:
                     print(f"download {RED} error {NC} ko")
             os.remove(D)
