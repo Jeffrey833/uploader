@@ -271,7 +271,7 @@ def download():
         link = open('iniDownloadLink.temp', 'r').read().splitlines()
         print('len link', len(link))
 
-        if len(link)>=3:
+        if len(link)>=5:
             input('saatnyua download y/n')
             for l in link:
                 dlink = l.split(' || ')[0]
