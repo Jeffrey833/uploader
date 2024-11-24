@@ -267,6 +267,16 @@ def download():
         download_url = [u for u in urls if "filemoon.in" in u]
         telegram_url = [u for u in urls if "telegram.php" in u]
 
+        file = open('iniDownloadLink.temp', 'a+')
+        link = file.read().splitlines()
+        
+        if len(link)>=3:
+            input('saatnyua download y/n')
+            for l in link:
+                dlink = l.split(' || ')[0]
+                fname = l.split(' || ')[1]
+                assert os.system(f'bash mcurl -s 8 -o "{fname}" "{dlink}"') == 0, 'download error'
+
         if telegram_url:
             print("skipping", i)
             continue
@@ -282,7 +292,9 @@ def download():
                 "filemoon.in", "filemoon.sx"
             )
             d.get(filemoon_download_url)
-            d.set_window_size(489, 667)
+            d.set_window_size(667, 667)
+            time.sleep(2)
+
             d.refresh()
 
             # Wait indefinitely until the specific element is present
@@ -305,19 +317,13 @@ def download():
                     #     f"bash mcurlv3.sh -o \"{filename}\" \"{download_link}\""
                     # )
 
-                    with open('iniDownloadLink.temp', 'a+') as file:
-                        link = file.read().splitlines()
-                        if len(link)>=3:
-                            input('saatnyua download y/n')
-
-                            for l in link:
-                                dlink = l.split(' || ')[0]
-                                fname = l.split(' || ')[1]
-
-                                assert os.system(f'bash mcurl -s 8 -o "{fname}" "{dlink}"') == 0, 'download error'
-
+                    if not len(link)>=3:
                         file.write(f'{download_link} || {filename}')
                         file.write('\n')
+
+                    break
+
+                        
 
                         
 
@@ -332,7 +338,6 @@ def download():
                     #     d.delete_all_cookies()
                     #     d.refresh()
 
-                    break  # Exit the loop if the element is found
                 except Exception as e:
                     # print(e)
                     print(f"{GREEN}Lagi nungguin tombol download..{NC}")
