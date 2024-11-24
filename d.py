@@ -197,15 +197,15 @@ def download():
 
                     filename = f"{slug}.mp4"
                     result = os.system(
-                        f"bash mcurlv2.sh -s 8 -o '{filename}' '{download_link}'"
+                        f"bash mcurlv3.sh -o \"{filename}\" \"{download_link}\""
                     )
 
-                    if result == 0:
+                    # if result == 0:
                         # assert (
                         #     os.system(f"python main.py {filename}") == 0
                         # ), "download error"
 
-                        subprocess.Popen(["python", "main.py", filename])
+                        # subprocess.Popen(["python", "main.py", filename])
                         # os.remove(filename)
                     # elif result == 2:
                     #     d.delete_all_cookies()
@@ -324,7 +324,7 @@ def get_top_movie():
 
 
 if __name__ == "__main__":
-    # download()
+    download()
     # direct_download('https://filemoon.in/download/y3asnqmmn2ue', 'zombieland-double-tap-2019')
 
-    get_top_movie()
+    # get_top_movie()
